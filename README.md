@@ -56,13 +56,113 @@ Redux-toolkit 세미나
 ## Redux-toolkit 을 사용하는 이유
 - 보일러플레이트 코드 제거
 - 기본적인 Redux 작업을 간단하게 만드는 API를 제공
+- 기존 redux에서는 불변성 조건에 의해 항상 spread를 사용하여 다른 state들은 변경되지 않게 유지하여야 하는 코드를 작성해야만 했음
 
-
-## 불변성 조건 + spread 개념( 얕은, 깊은 복사)
-JavaScript는 기본적으로 가변 언어이며, 불변 업데트를 작성하려면 수동으로 객체 복사(spread)와 배열 업데이트가 필요합니다
 
 ## createSlice, configureStore
-configureStore는 한 번의 호출로 Redux 스토어를 설정하며, 리듀서를 결합하고 thunk 미들웨어를 추가하고, Redux DevTools 통합을 하는 등의 작업을 수행합니다. 또한, 이름이 있는 옵션 매개변수를 사용하기 때문에 createStore보다 구성이 쉽습니다.
-createSlice는 Immer 라이브러리를 사용하는 리듀서를 작성할 수 있게 해줍니다. 이를 통해 state.value = 123과 같은 "변형 (mutating)" JS 문법을 spreads 없이도 불변성을 유지하며 업데이트할 수 있습니다. 또한, 각 리듀서에 대한 액션 생성자 함수를 자동으로 생성하고, 리듀서 이름에 기반하여 내부적으로 액션 타입 문자열을 생성합니다. 마지막으로, TypeScript와 잘 호환됩니다.
+### createSlice
+  - 리듀서를 작성할 수 있게 도와주는 함수이다.
+  - 반드시 'name', 'initialState', 'reducers' 의 속성은 필수이다.
+  - 'name'에 지정된 prefix값을 가지고 createSlice가 내부적으로 유니크한 이름을 만들어 준다.
+  - 'initialState'는 reducer에서 사용할 값을 지정한다.
+  - 'reducers'는 사용하는 함수를 모두 정의할 수 있으며 매개변수로는 'state', 'action'이 존재한다.
+
+### configureStore
+  - 기존 redux에서는 createStore를 사용하기 위해 항상 combined 된 store를 rootRedux 값으로 보냈어야 한다.
+  - 그 외에도 thunk, applyMiddleware, reduxDevTools 모두 수행하여야 했다.
+
+#### 기존 Reducer
+```javascript
+let initialState = {
+    productList : [],
+    selectedItem : null
+};
+
+function productReducer( state = initialState, action ){
+  let {type, payload} = action;
+  switch (type){ // 매번 switch case 만들어야 함 (action에서 호출하는 이름과 동일해야 함)
+    case "GET_PRODUCT_SUCCESS": // 유니크한 이름으로 지정해야 함
+      return {...state, productList: payload.data };
+    case "GET_SINGLE_PRODUCT_SUCCESS":
+      return {...state, selectedItem: payload.data };
+    default:
+      return {...state};
+  }
+}
+
+export default productReducer;
+```
+
+#### RTK를 사용한 Reducer
+```javascript
+import {createSlice} from "@reduxjs/toolkit";
+
+let initialState = {
+  productList : [],
+  selectedItem : null
+};
+
+const productSlice = createSlice({
+  name : "product",
+  initialState,
+  reducers : { // actions에 해당 함수들이 지정됨
+    getAllProducts(state, action){
+      state.productList = action.payload.data; // 객체가 아니게 됐으므로 = 로 지정
+    },
+    getSingleProduct(state, action){
+      state.selectedItem = action.payload.data; // dispatch에서 지정한 객체가 payload 안으로 들어가는걸 알 수 있음
+    }
+  }
+});
+
+export const productActions = productSlice.actions; // dispatch 할 때 사용할 수 있게 export 처리
+
+export default productSlice.reducer; //store에 전달해야하는 것은 reducer
+```
+
+
+#### 기존 Store
+```javascript
+import { createSTore, applyMiddleware } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import thunk from "redux-thunk";
+import rootRecuder from "./reducers";
+
+let store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(thunk))
+);
+
+// combinereducer, thunk, applyMiddleware, reduxDevTools 사용했어야만 했음 
+
+export default store;
+```
+
+#### RTK를 사용한 Store
+```javascript
+import {configureStore} from "@reduxjs/toolkit";
+
+const store = configureStore({ // combineReducer 안에 있던 객체를 여기다 지정
+  reducer:{
+    auth : authenticateReducer,
+    product : productReducer,
+  }
+})
+
+export default store;
+```
+
+#### dispatch 방법
+```javascript
+
+//기존
+dispatch({type: "GET_PRODUCT_SUCCESS", payload: {data});
+
+//RTK
+import {productActions} from "../reducers/productReducer";
+
+dispatch(productActions.getAllProducts({data})); // 매개변수 값은 알아서 payload 아래로 들어감
+
+```
 
 ## RTK Query
