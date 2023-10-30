@@ -183,6 +183,19 @@ export const productActions = productSlice.actions; // dispatch 할 때 사용�
 export default productSlice.reducer; //store에 전달해야하는 것은 reducer
 ```
 
+#### dispatch 방법
+```javascript
+
+//기존
+dispatch({type: "GET_PRODUCT_SUCCESS", payload: {data});
+
+//RTK
+import {productActions} from "../reducers/productReducer";
+
+dispatch(productActions.getAllProducts({data})); // 매개변수 값은 알아서 payload 아래로 들어감
+
+```
+
 
 #### 기존 Store
 ```javascript
@@ -215,18 +228,7 @@ const store = configureStore({ // combineReducer 안에 있던 객체를 여기�
 export default store;
 ```
 
-#### dispatch 방법
-```javascript
 
-//기존
-dispatch({type: "GET_PRODUCT_SUCCESS", payload: {data});
-
-//RTK
-import {productActions} from "../reducers/productReducer";
-
-dispatch(productActions.getAllProducts({data})); // 매개변수 값은 알아서 payload 아래로 들어감
-
-```
 
 <br/>
 <br/>
