@@ -1,5 +1,4 @@
-# redux-toolkit
-Redux-toolkit 세미나
+# redux-toolkit 세미나 2023-10-31(화)
 
 <br/>
 <br/>
@@ -71,7 +70,7 @@ Action Creator는 액션을 언제든지 사용할 수 있도록 만들어 주�
   - 'reducers'는 사용하는 함수를 모두 정의할 수 있으며 매개변수로는 'state', 'action'이 존재한다.
 
 ### configureStore
-  - 기존 redux에서는 createStore를 사용하기 위해 항상 combined 된 store를 rootRedux 값으로 보냈어야 한다.
+  - 기존 redux에서는 createStore를 사용하기 위해 항상 combined 된 store를 rootReducer 값으로 보냈어야 한다.
   - 그 외에도 thunk, applyMiddleware, reduxDevTools 모두 수행하여야 했다.
 
 #### 기존 Reducer
@@ -169,3 +168,9 @@ dispatch(productActions.getAllProducts({data})); // 매개변수 값은 알아�
 ```
 
 ## RTK Query
+서버에서 받아온 데이터 상태를 관리할 수 있는 라이브러리로 RTK의 연장선이라 볼 수 있음.
+
+  - 서버와의 통신 과정에서 로딩 상태, 에러 여부 등을 관련 컴포넌트 내부에서 직접 상태를 작성하여 관리하지 않아도 되며, props drilling을 할 필요도 거의 없어진다.
+  - 자동 데이터 캐싱을 통해 서버의 부담도 줄일 수 있다.
+  - 일정 시간이 지나거나, 데이터 변동이 생겼을 때(유저가 게시글을 작성하는 등) 자동으로 캐시된 데이터를 제거하고 다시 받아와 유저에게 (적당히) 최신의 데이터를 보여줄 수도 있다.
+
