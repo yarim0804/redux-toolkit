@@ -17,7 +17,7 @@
 Action은 어떤걸 하는지에 대한 지시가 있는 객체이다. 액션의 type 속성이 반드시 필요하며 이를 바탕으로 리듀서에 작동하게 하는 것이 가능하다.
 
 ### Action Creator
-Action Creator는 액션을 언제든지 사용할 수 있도록 만들어 주는 함수이다.
+Action Creator는 액션을 생성하여 dispatch 함수를 통해 Redux 스토어로 전달하는 역할을 한다.
 
 ### Dispatch
 디스패치는 스토어의 내장 함수 중 하나이며, 만들어진 액션 객체를 리듀서에 보내 넘겨줘 상태를 업데이트 시켜주는 역할을 한다.
@@ -35,12 +35,15 @@ Action Creator는 액션을 언제든지 사용할 수 있도록 만들어 주�
 1. UI가 처음 렌더링될 때, UI 컴포넌트는 리덕스 스토어의 상태에 접근하여 해당 상태를 렌더링한다.
 2. 이후 UI에서 상태가 변경되면, 앱은 디스패치를 실행해 액션을 일으킨다.
 3. 새로운 액션을 받은 스토어는 리듀서를 실행하고 리듀서를 통해 나온 값을 새로운 상태로 저장한다.
-4. 서브스크라이브된 UI은 상태 업데이트로 변경된 데이터를 새롭게 렌더링한다.
+4. 서브스크라이브된 UI는 상태 업데이트로 변경된 데이터를 새롭게 렌더링한다.
 
 <br/>
 <br/>
 
 ## Redux가 필요한 이유
+
+<br/>
+<br/>
 
 ### - Redux가 없다면?
   Props -> Props -> Props ... Props drilling 야기
@@ -57,10 +60,65 @@ Action Creator는 액션을 언제든지 사용할 수 있도록 만들어 주�
 ## Redux-toolkit 을 사용하는 이유
 - 보일러플레이트 코드 제거
 - 기본적인 Redux 작업을 간단하게 만드는 API를 제공 (패키지 의존성을 줄여줌)
-- 기존 redux에서는 불변성 조건에 의해 항상 spread를 사용하여 다른 state들은 변경되지 않게 유지하여야 하는 코드를 작성해야만 했음
 
+<br/>
+<br/>
+
+## ChatGPT 에게 물어본 Redux-toolkit 을 사용하는 이유
+
+1. 간편한 스토어 설정: Redux Toolkit은 configureStore 함수를 사용하여 스토어를 설정하고 초기 상태, 리듀서, 미들웨어를 자동으로 결합합니다. 이로써 초기 스토어 설정 및 구성 코드를 크게 단순화시킬 수 있습니다.
+
+```javascript
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from './reducers';
+
+const store = configureStore({
+  reducer: rootReducer,
+});
+```
+
+2. 리듀서 작성 간소화: Redux Toolkit은 createSlice 함수를 사용하여 리듀서 코드를 작성할 때 반복적인 코드를 줄여줍니다. 이 함수는 리듀서 함수, 액션 생성자 및 초기 상태를 모두 생성하며 액션 유형 문자열과 액션 생성자를 자동으로 생성합니다.
+
+```javascript
+import { createSlice } from '@reduxjs/toolkit';
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: 0,
+  reducers: {
+    increment: (state) => state + 1,
+    decrement: (state) => state - 1,
+  },
+});
+
+export const { increment, decrement } = counterSlice.actions;
+export default counterSlice.reducer;
+```
+
+3. 불변성 유지: Redux Toolkit은 불변성을 유지하고 상태를 업데이트하는 데 도움을 주는 내장 함수인 createSlice와 createReducer를 포함합니다. 이렇게 하면 상태 변경 로직을 더 명확하게 만들고 불필요한 복사를 피할 수 있습니다.
+
+4. 더 간편한 비동기 작업: Redux Toolkit은 비동기 액션을 처리하는 데 사용할 수 있는 createAsyncThunk 함수를 제공합니다. 이를 통해 비동기 작업을 효과적으로 처리하고 보일러플레이트 코드를 줄일 수 있습니다.
+
+```javascript
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import api from './api';
+
+export const fetchUserData = createAsyncThunk('user/fetchUserData', async (userId) => {
+  const response = await api.fetchUserData(userId);
+  return response.data;
+});
+```
+
+5. DevTools 통합: Redux Toolkit은 Redux DevTools와 쉽게 통합됩니다. 이로써 액션 추적, 시간 여행 디버깅 및 상태 모니터링을 쉽게 수행할 수 있습니다.
+
+<br/>
+<br/>
 
 ## createSlice, configureStore
+
+<br/>
+<br/>
+
 ### createSlice
   - createAction, createReducer 함수가 내부적으로 내장되어 있다.
   - 리듀서를 작성할 수 있게 도와주는 함수이다.
@@ -72,6 +130,9 @@ Action Creator는 액션을 언제든지 사용할 수 있도록 만들어 주�
 ### configureStore
   - 기존 redux에서는 createStore를 사용하기 위해 항상 combined 된 store를 rootReducer 값으로 보냈어야 한다.
   - 그 외에도 thunk, applyMiddleware, reduxDevTools 모두 수행하여야 했다.
+
+<br/>
+<br/>
 
 #### 기존 Reducer
 ```javascript
@@ -166,6 +227,9 @@ import {productActions} from "../reducers/productReducer";
 dispatch(productActions.getAllProducts({data})); // 매개변수 값은 알아서 payload 아래로 들어감
 
 ```
+
+<br/>
+<br/>
 
 ## RTK Query
 서버에서 받아온 데이터 상태를 관리할 수 있는 라이브러리로 RTK의 연장선이라 볼 수 있음.
