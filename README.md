@@ -127,9 +127,6 @@ export const fetchUserData = createAsyncThunk('user/fetchUserData', async (userI
   - 'initialState'는 reducer에서 사용할 값을 지정한다.
   - 'reducers'는 사용하는 함수를 모두 정의할 수 있으며 매개변수로는 'state', 'action'이 존재한다.
 
-### configureStore
-  - 기존 redux에서는 createStore를 사용하기 위해 항상 combined 된 store를 rootReducer 값으로 보냈어야 한다.
-  - 그 외에도 thunk, applyMiddleware, reduxDevTools 모두 수행하여야 했다.
 
 <br/>
 <br/>
@@ -196,6 +193,12 @@ dispatch(productActions.getAllProducts({data})); // 매개변수 값은 알아�
 
 ```
 
+### configureStore
+  - 기존 redux에서는 createStore를 사용하기 위해 항상 combined 된 store를 rootReducer 값으로 보냈어야 한다.
+  - 그 외에도 thunk, applyMiddleware, reduxDevTools 모두 수행하여야 했다.
+
+<br/>
+<br/>
 
 #### 기존 Store
 ```javascript
