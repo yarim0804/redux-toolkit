@@ -30,6 +30,7 @@ Action Creator는 액션을 생성하여 dispatch 함수를 통해 Redux 스토�
 단, 리듀서는 순수함수여야 하고, 리듀서 안에서 동적인 처리나 변화는 있어서는 안 된다. (불변성 법칙)
 
 
+
 <br><img src="https://velog.velcdn.com/images/sweet_pumpkin/post/53df187d-3402-4ec1-be28-1fd13dcbba57/image.gif"/>
 <br>
 1. UI가 처음 렌더링될 때, UI 컴포넌트는 리덕스 스토어의 상태에 접근하여 해당 상태를 렌더링한다.
@@ -39,6 +40,9 @@ Action Creator는 액션을 생성하여 dispatch 함수를 통해 Redux 스토�
 
 <br/>
 <br/>
+<br/>
+<br/>
+
 
 ## Redux가 필요한 이유
 
@@ -61,6 +65,10 @@ Action Creator는 액션을 생성하여 dispatch 함수를 통해 Redux 스토�
 - 보일러플레이트 코드 제거
 - 기본적인 Redux 작업을 간단하게 만드는 API를 제공 (패키지 의존성을 줄여줌)
 
+<br/>
+<br/>
+<br/>
+<br/>
 <br/>
 <br/>
 
@@ -113,6 +121,8 @@ export const fetchUserData = createAsyncThunk('user/fetchUserData', async (userI
 
 <br/>
 <br/>
+<br/>
+<br/>
 
 ## createSlice, configureStore
 
@@ -128,6 +138,8 @@ export const fetchUserData = createAsyncThunk('user/fetchUserData', async (userI
   - 'reducers'는 사용하는 함수를 모두 정의할 수 있으며 매개변수로는 'state', 'action'이 존재한다.
 
 
+<br/>
+<br/>
 <br/>
 <br/>
 
@@ -235,6 +247,11 @@ export default store;
 
 <br/>
 <br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
 
 ## RTK Query
 서버에서 받아온 데이터 상태를 관리할 수 있는 라이브러리로 RTK의 연장선이라 볼 수 있음.
